@@ -1,6 +1,4 @@
-#include <iostream>
-#include <string>
-#include <utility>
+#include <stdio.h>
 #include <vector>
 #include <algorithm>
 using namespace std;
@@ -8,52 +6,40 @@ using namespace std;
 int n,k; //물품의 수 & 제한 무게
  
 int w,v; //무게  & 가치  
- 
-bool compare(pair<int, int> a, pair<int, int> b) {
-    if (a.second== b.second) {
-    	return a.first > b.first;
-	}
-    else
-	{
-	 return a.second > b.second ;//내림차순
-	}
+
+pair<int,int> bag[100];
+
+int dp[101][100001];
+
+int go(int idx, int x)
+{
+	if(dp[idx][x] > 0 ) return dp[idx][x];
+	if(idx==n) return 0;
+	
+	int n1=0;
+	
+	if(x+bag[idx].first <=k)
+		n1=bag[idx].second + go(idx+1,x+bag[idx].first);
+		
+	int n2=go(idx+1,x);		
+	
+	return dp[idx][x]=max(n1,n2);
 }
 
-
-int main()
+int main(void)
 {
   int answer=0;
-  vector<pair<int,int>> bag;
   
-  cin>>n>>k;
+  scanf("%d %d", &n,&k);
   
   for(int i=0; i<n ; i++)
   {
-  	cin>>w>>v;
-  	bag.push_back(make_pair(w,v));	
+  	scanf("%d %d", &w,&v);
+  	bag[i]=make_pair(w,v);	
   }
   
-  sort(bag.begin(),bag.end(),compare);
+  printf("%d \n" , go(0,0));
   
-
-  for(int i=0 ;i<n;i++)
-  {
-  	if(bag[i].first+bag[i+1].first<=k)
-  	{
-  		bag[i+1].first=	bag[i].first+bag[i+1].first;
-  		bag[i+1].second=bag[i].second+bag[i+1].second;
-	}
-  }
-  sort(bag.begin(),bag.end(),compare);
+  return 0;
   
- for(int i=0; i<bag.size();i++)
-  {
-      if(bag[i].first<=k)
-      {
-          cout<<bag[i].second;
-          break;
-      }
-  }
-      
-
 } 
